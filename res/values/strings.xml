@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Reddit Reader</string>
+    <string name="title_subreddit_detail">Subreddit Detail</string>
+
+</resources>
