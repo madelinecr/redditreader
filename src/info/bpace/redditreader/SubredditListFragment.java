@@ -1,13 +1,32 @@
 package info.bpace.redditreader;
 
+import info.bpace.redditreader.dummy.DummyContent;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
-import info.bpace.redditreader.dummy.DummyContent;
 
 /**
  * A list fragment representing a list of Subreddits. This fragment also
@@ -25,6 +44,10 @@ public class SubredditListFragment extends ListFragment {
 	 * activated item position. Only used on tablets.
 	 */
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
+
+	private static String DEBUG_TAG = "REDDITREADER";
+	private List<String> objects = null;
+	private ArrayAdapter<String> aa = null;
 
 	/**
 	 * The fragment's current callback object, which is notified of list item
@@ -71,11 +94,30 @@ public class SubredditListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 
 		// TODO: replace with a real list adapter.
-		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, DummyContent.ITEMS));
+		//	setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
+		//			android.R.layout.simple_list_item_activated_1,
+		//			android.R.id.text1, DummyContent.ITEMS));
+	    Activity a = getActivity();
+	    int layout = android.R.layout.simple_list_item_activated_1;
+	    int text = android.R.id.text1;
+	    objects = new ArrayList<String>();
+	    
+	    // Preparing for and firing off ASyncTask
+	    String stringUrl = "http://www.reddit.com/hot.json";
+	    ConnectivityManager connMgr = 
+	    		(ConnectivityManager) a.getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+	    if(networkInfo != null && networkInfo.isConnected()) {
+	    	new FrontpageTask().execute(stringUrl);
+	    	objects.add("Loading...");
+	    } else {
+	    	objects.add("Network error.");
+	    }
+	    
+	    aa = new ArrayAdapter<String>(a, layout, text, objects);
+	    setListAdapter(aa);
 	}
-
+	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
@@ -148,5 +190,70 @@ public class SubredditListFragment extends ListFragment {
 		}
 
 		mActivatedPosition = position;
+	}
+	
+	public class FrontpageTask extends AsyncTask<String, String, String> {
+
+
+		@Override
+		protected String doInBackground(String... urls) {
+			// TODO Auto-generated method stub
+			try {
+				return downloadUrl(urls[0]);
+			} catch (IOException e) {
+				return "Unable to retrieve web page. URL may be invalid.";
+			}
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			try {
+				JSONObject jobject = new JSONObject(result);
+				aa.clear();
+				JSONArray jposts = jobject.getJSONObject("data").getJSONArray("children");
+				for(int i = 0; i < jposts.length(); i++) {
+					aa.add(jposts.getJSONObject(i).getJSONObject("data").getString("title"));
+				}
+			} catch (JSONException e) {
+				Log.e(DEBUG_TAG, "Error, exception occured: " + e);
+			}
+		}
+
+		private String downloadUrl(Object newUrl) throws IOException {
+			InputStream is = null;
+			int len = 40000;
+
+			try {
+				URL url = new URL((String) newUrl);
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setReadTimeout(10000);
+				conn.setConnectTimeout(15000);
+				conn.setRequestMethod("GET");
+				conn.setDoInput(true);
+
+				conn.connect();
+				//int response = conn.getResponseCode();
+				is = conn.getInputStream();
+
+				String contentAsString = readIt(is, len);
+				return contentAsString;
+
+			} finally {
+				if (is != null) {
+					is.close();
+				}
+			}
+		}
+
+		private String readIt(InputStream stream, int len)
+				throws IOException, UnsupportedEncodingException {
+
+			Reader reader = null;
+			reader = new InputStreamReader(stream, "UTF-8");
+			char[] buffer = new char[len];
+			reader.read(buffer);
+
+			return new String(buffer);
+		}
 	}
 }
