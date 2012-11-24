@@ -48,6 +48,9 @@ public class SubredditListFragment extends ListFragment {
 	private static String DEBUG_TAG = "REDDITREADER";
 	private List<String> objects = null;
 	private ArrayAdapter<String> aa = null;
+	private Activity a = null;
+	private int text = 0;
+	private int layout = 0;
 
 	/**
 	 * The fragment's current callback object, which is notified of list item
@@ -97,9 +100,9 @@ public class SubredditListFragment extends ListFragment {
 		//	setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
 		//			android.R.layout.simple_list_item_activated_1,
 		//			android.R.id.text1, DummyContent.ITEMS));
-	    Activity a = getActivity();
-	    int layout = android.R.layout.simple_list_item_activated_1;
-	    int text = android.R.id.text1;
+	    a = getActivity();
+	    layout = android.R.layout.simple_list_item_activated_1;
+	    text = android.R.id.text1;
 	    objects = new ArrayList<String>();
 	    
 	    // Preparing for and firing off ASyncTask
@@ -109,13 +112,13 @@ public class SubredditListFragment extends ListFragment {
 	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 	    if(networkInfo != null && networkInfo.isConnected()) {
 	    	new FrontpageTask().execute(stringUrl);
-	    	objects.add("Loading...");
+	    	//objects.add("Loading...");
 	    } else {
-	    	objects.add("Network error.");
+	    	//objects.add("Network error.");
 	    }
 	    
-	    aa = new ArrayAdapter<String>(a, layout, text, objects);
-	    setListAdapter(aa);
+//	    aa = new ArrayAdapter<String>(a, layout, text, objects);
+//	    setListAdapter(aa);
 	}
 	
 	@Override
@@ -209,11 +212,14 @@ public class SubredditListFragment extends ListFragment {
 		protected void onPostExecute(String result) {
 			try {
 				JSONObject jobject = new JSONObject(result);
-				aa.clear();
+				//aa.clear();
 				JSONArray jposts = jobject.getJSONObject("data").getJSONArray("children");
+				objects = new ArrayList<String>();
 				for(int i = 0; i < jposts.length(); i++) {
-					aa.add(jposts.getJSONObject(i).getJSONObject("data").getString("title"));
+					objects.add(jposts.getJSONObject(i).getJSONObject("data").getString("title"));
 				}
+				aa = new ArrayAdapter<String>(a, layout, text, objects);
+				setListAdapter(aa);
 			} catch (JSONException e) {
 				Log.e(DEBUG_TAG, "Error, exception occured: " + e);
 			}
