@@ -3,6 +3,7 @@ package info.bpace.redditreader;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -23,7 +24,7 @@ import android.view.MenuInflater;
  * selections.
  */
 public class SubredditListActivity extends FragmentActivity implements
-		SubredditListFragment.Callbacks {
+		ThingCallbacks {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -65,18 +66,22 @@ public class SubredditListActivity extends FragmentActivity implements
 	 * that the item with the given ID was selected.
 	 */
 	@Override
-	public void onItemSelected(String id) {
+	public void readURI(String id, ThingCallbacks.Type type) {
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by
 			// adding or replacing the detail fragment using a
 			// fragment transaction.
-			Bundle arguments = new Bundle();
-			arguments.putString(SubredditDetailFragment.ARG_ITEM_ID, id);
-			SubredditDetailFragment fragment = new SubredditDetailFragment();
-			fragment.setArguments(arguments);
-			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.subreddit_detail_container, fragment)
-					.commit();
+			if(type == ThingCallbacks.Type.SUBREDDIT) { 
+				Bundle arguments = new Bundle();
+				arguments.putString(SubredditDetailFragment.ARG_ITEM_ID, id);
+				SubredditDetailFragment fragment = new SubredditDetailFragment();
+				fragment.setArguments(arguments);
+				getSupportFragmentManager().beginTransaction()
+						.replace(R.id.subreddit_detail_container, fragment)
+						.commit();
+			} else if(type == ThingCallbacks.Type.LINK) {			
+				Log.d("REDDITREADER", "This is a link, not doing shit.");
+			}
 
 		} else {
 			// In single-pane mode, simply start the detail activity

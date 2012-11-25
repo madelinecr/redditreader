@@ -22,7 +22,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 /**
  * A fragment representing a single Subreddit detail screen. This fragment is
@@ -41,12 +43,26 @@ public class SubredditDetailFragment extends ListFragment {
 	private Activity a = null;
 	private int text = 0;
 	private int layout = 0;
+	
+	private ThingCallbacks mCallbacks = sDummyCallbacks;
+	
+	private static ThingCallbacks sDummyCallbacks = new ThingCallbacks() {
+		public void readURI(String id, ThingCallbacks.Type type) {
+		}
+	};
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
 	 */
 	public SubredditDetailFragment() {
+	}
+	
+	public interface Callbacks {
+		/**
+		 * Callback for when an item has been selected.
+		 */
+		public void onItemSelected(String id, boolean article);
 	}
 
 	@Override
@@ -75,6 +91,37 @@ public class SubredditDetailFragment extends ListFragment {
 	    	new FrontpageTask().execute(stringUrl);
 	    }
 	}
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// Activities containing this fragment must implement its callbacks.
+		if (!(activity instanceof ThingCallbacks)) {
+			throw new IllegalStateException(
+					"Activity must implement fragment's callbacks.");
+		}
+
+		mCallbacks = (ThingCallbacks) activity;
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+
+		// Reset the active callbacks interface to the dummy implementation.
+		mCallbacks = sDummyCallbacks;
+	}
+
+	@Override
+	public void onListItemClick(ListView listView, View view, int position,
+			long id) {
+		super.onListItemClick(listView, view, position, id);
+
+		// Notify the active callbacks interface (the activity, if the
+		// fragment is attached to one) that an item has been selected.
+		mCallbacks.readURI(objects.get(position), ThingCallbacks.Type.LINK);
+	}
 
 	public class FrontpageTask extends AsyncTask<String, String, String> {
 
@@ -101,7 +148,6 @@ public class SubredditDetailFragment extends ListFragment {
 				for(int i = 0; i < jposts.length(); i++) {
 					aa.add(jposts.getJSONObject(i).getJSONObject("data").getString("title"));
 				}
-				//ListView lv = (ListView) a.findViewById(R.id.subreddit_list);
 				
 			} catch (JSONException e) {
 				//Log.e(DEBUG_TAG, "Error, exception occured: " + e);
