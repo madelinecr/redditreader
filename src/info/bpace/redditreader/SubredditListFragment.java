@@ -1,29 +1,11 @@
 package info.bpace.redditreader;
 
-import info.bpace.redditreader.dummy.DummyContent;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -44,13 +26,31 @@ public class SubredditListFragment extends ListFragment {
 	 * activated item position. Only used on tablets.
 	 */
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
-
+	public static final String QUERY_FRONTPAGE = "hot";
+	public static final String QUERY_NEW = "new";
+	public static final String QUERY_TOP = "top";
+	
 	private static String DEBUG_TAG = "REDDITREADER";
-	private List<String> objects = null;
-	private ArrayAdapter<DummyContent.DummyItem> aa = null;
+	private static List<MenuItem> categories = new ArrayList<MenuItem>();
+	private ArrayAdapter<MenuItem> aa = null;
 	private Activity a = null;
 	private int text = 0;
 	private int layout = 0;
+	
+	private static class MenuItem {
+		public String id;
+		public String title;
+		
+		public MenuItem(String newId, String newTitle) { id = newId; title = newTitle; }
+		@Override
+		public String toString() { return title; }
+	}
+	
+	static {
+		categories.add(new MenuItem(QUERY_FRONTPAGE, "Front Page"));
+		categories.add(new MenuItem(QUERY_NEW, "New"));
+		categories.add(new MenuItem(QUERY_TOP, "Top"));
+	}
 
 	/**
 	 * The fragment's current callback object, which is notified of list item
@@ -96,29 +96,11 @@ public class SubredditListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// TODO: replace with a real list adapter.
-		//	setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-		//			android.R.layout.simple_list_item_activated_1,
-		//			android.R.id.text1, DummyContent.ITEMS));
 	    a = getActivity();
 	    layout = android.R.layout.simple_list_item_activated_1;
 	    text = android.R.id.text1;
-	    objects = new ArrayList<String>();
-	    aa = new ArrayAdapter<DummyContent.DummyItem>(a, layout, text, DummyContent.ITEMS);
-	    
-	    // Preparing for and firing off ASyncTask
-	    String stringUrl = "http://www.reddit.com/hot.json";
-	    ConnectivityManager connMgr = 
-	    		(ConnectivityManager) a.getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-	    if(networkInfo != null && networkInfo.isConnected()) {
-	    	//new FrontpageTask().execute(stringUrl);
-	    	//objects.add("Loading...");
-	    } else {
-	    	//objects.add("Network error.");
-	    }
-	    
-//	    aa = new ArrayAdapter<String>(a, layout, text, objects);
+	    aa = new ArrayAdapter<MenuItem>(a, layout, text, categories);
+
 	    setListAdapter(aa);
 	}
 	
@@ -162,7 +144,7 @@ public class SubredditListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+		mCallbacks.onItemSelected(categories.get(position).id);
 	}
 
 	@Override

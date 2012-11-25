@@ -21,6 +21,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 
 /**
@@ -58,7 +59,18 @@ public class SubredditDetailFragment extends ListFragment {
 	    objects = new ArrayList<String>();
 	    aa = new ArrayAdapter<String>(a, layout, text, objects);
 	    
-	    String stringUrl = "http://www.reddit.com/hot.json";
+	    String baseUrl = "http://www.reddit.com/";
+	    String stringUrl = null;
+	    		
+	    if(getArguments().containsKey(ARG_ITEM_ID)) {
+	    	String query = getArguments().getString(ARG_ITEM_ID);
+	    	stringUrl = baseUrl + query + ".json";
+	    } else {
+	    	stringUrl = "http://www.reddit.com/hot";
+	    }
+	    
+	    Log.d("TEST", stringUrl);
+	    
 	    ConnectivityManager connMgr = 
 	    		(ConnectivityManager) a.getSystemService(Context.CONNECTIVITY_SERVICE);
 	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -84,13 +96,16 @@ public class SubredditDetailFragment extends ListFragment {
 			try {
 				JSONObject jobject = new JSONObject(result);
 				JSONArray jposts = jobject.getJSONObject("data").getJSONArray("children");
+				
 				objects = new ArrayList<String>();
-				for(int i = 0; i < jposts.length(); i++) {
-					objects.add(jposts.getJSONObject(i).getJSONObject("data").getString("title"));
-				}
 				aa = new ArrayAdapter<String>(a, layout, text, objects);
-				//ListView lv = (ListView) a.findViewById(R.id.subreddit_list);
 				setListAdapter(aa);
+				
+				for(int i = 0; i < jposts.length(); i++) {
+					aa.add(jposts.getJSONObject(i).getJSONObject("data").getString("title"));
+				}
+				//ListView lv = (ListView) a.findViewById(R.id.subreddit_list);
+				
 			} catch (JSONException e) {
 				//Log.e(DEBUG_TAG, "Error, exception occured: " + e);
 			}
