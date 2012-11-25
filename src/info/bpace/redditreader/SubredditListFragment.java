@@ -47,7 +47,7 @@ public class SubredditListFragment extends ListFragment {
 
 	private static String DEBUG_TAG = "REDDITREADER";
 	private List<String> objects = null;
-	private ArrayAdapter<String> aa = null;
+	private ArrayAdapter<DummyContent.DummyItem> aa = null;
 	private Activity a = null;
 	private int text = 0;
 	private int layout = 0;
@@ -104,6 +104,7 @@ public class SubredditListFragment extends ListFragment {
 	    layout = android.R.layout.simple_list_item_activated_1;
 	    text = android.R.id.text1;
 	    objects = new ArrayList<String>();
+	    aa = new ArrayAdapter<DummyContent.DummyItem>(a, layout, text, DummyContent.ITEMS);
 	    
 	    // Preparing for and firing off ASyncTask
 	    String stringUrl = "http://www.reddit.com/hot.json";
@@ -111,14 +112,14 @@ public class SubredditListFragment extends ListFragment {
 	    		(ConnectivityManager) a.getSystemService(Context.CONNECTIVITY_SERVICE);
 	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 	    if(networkInfo != null && networkInfo.isConnected()) {
-	    	new FrontpageTask().execute(stringUrl);
+	    	//new FrontpageTask().execute(stringUrl);
 	    	//objects.add("Loading...");
 	    } else {
 	    	//objects.add("Network error.");
 	    }
 	    
 //	    aa = new ArrayAdapter<String>(a, layout, text, objects);
-//	    setListAdapter(aa);
+	    setListAdapter(aa);
 	}
 	
 	@Override
@@ -193,73 +194,5 @@ public class SubredditListFragment extends ListFragment {
 		}
 
 		mActivatedPosition = position;
-	}
-	
-	public class FrontpageTask extends AsyncTask<String, String, String> {
-
-
-		@Override
-		protected String doInBackground(String... urls) {
-			// TODO Auto-generated method stub
-			try {
-				return downloadUrl(urls[0]);
-			} catch (IOException e) {
-				return "Unable to retrieve web page. URL may be invalid.";
-			}
-		}
-		
-		@Override
-		protected void onPostExecute(String result) {
-			try {
-				JSONObject jobject = new JSONObject(result);
-				//aa.clear();
-				JSONArray jposts = jobject.getJSONObject("data").getJSONArray("children");
-				objects = new ArrayList<String>();
-				for(int i = 0; i < jposts.length(); i++) {
-					objects.add(jposts.getJSONObject(i).getJSONObject("data").getString("title"));
-				}
-				aa = new ArrayAdapter<String>(a, layout, text, objects);
-				setListAdapter(aa);
-			} catch (JSONException e) {
-				Log.e(DEBUG_TAG, "Error, exception occured: " + e);
-			}
-		}
-
-		private String downloadUrl(Object newUrl) throws IOException {
-			InputStream is = null;
-			int len = 40000;
-
-			try {
-				URL url = new URL((String) newUrl);
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				conn.setReadTimeout(10000);
-				conn.setConnectTimeout(15000);
-				conn.setRequestMethod("GET");
-				conn.setDoInput(true);
-
-				conn.connect();
-				//int response = conn.getResponseCode();
-				is = conn.getInputStream();
-
-				String contentAsString = readIt(is, len);
-				return contentAsString;
-
-			} finally {
-				if (is != null) {
-					is.close();
-				}
-			}
-		}
-
-		private String readIt(InputStream stream, int len)
-				throws IOException, UnsupportedEncodingException {
-
-			Reader reader = null;
-			reader = new InputStreamReader(stream, "UTF-8");
-			char[] buffer = new char[len];
-			reader.read(buffer);
-
-			return new String(buffer);
-		}
 	}
 }
