@@ -1,5 +1,7 @@
 package info.bpace.redditreader;
 
+import info.bpace.redditreader.api.Listings;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +28,6 @@ public class SubredditListFragment extends ListFragment {
 	 * activated item position. Only used on tablets.
 	 */
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
-	public static final String QUERY_FRONTPAGE = "hot";
-	public static final String QUERY_NEW = "new";
-	public static final String QUERY_TOP = "top";
 	
 	private static String DEBUG_TAG = "REDDITREADER";
 	private static List<MenuItem> categories = new ArrayList<MenuItem>();
@@ -47,9 +46,9 @@ public class SubredditListFragment extends ListFragment {
 	}
 	
 	static {
-		categories.add(new MenuItem(QUERY_FRONTPAGE, "Front Page"));
-		categories.add(new MenuItem(QUERY_NEW, "New"));
-		categories.add(new MenuItem(QUERY_TOP, "Top"));
+		categories.add(new MenuItem(Listings.hotPosts(), "Front Page"));
+		categories.add(new MenuItem(Listings.newPosts(), "New"));
+		categories.add(new MenuItem(Listings.topPosts(), "Top"));
 	}
 
 	/**
@@ -96,6 +95,7 @@ public class SubredditListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// TODO: Fire off an AsyncTask here to grab popular subreddits and append them to the ListView
 	    a = getActivity();
 	    layout = android.R.layout.simple_list_item_activated_1;
 	    text = android.R.id.text1;

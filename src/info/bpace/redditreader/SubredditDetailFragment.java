@@ -59,12 +59,9 @@ public class SubredditDetailFragment extends ListFragment {
 	    objects = new ArrayList<String>();
 	    aa = new ArrayAdapter<String>(a, layout, text, objects);
 	    
-	    String baseUrl = "http://www.reddit.com/";
-	    String stringUrl = null;
-	    		
+	    String stringUrl;
 	    if(getArguments().containsKey(ARG_ITEM_ID)) {
-	    	String query = getArguments().getString(ARG_ITEM_ID);
-	    	stringUrl = baseUrl + query + ".json";
+	    	stringUrl = getArguments().getString(ARG_ITEM_ID);
 	    } else {
 	    	stringUrl = "http://www.reddit.com/hot";
 	    }
