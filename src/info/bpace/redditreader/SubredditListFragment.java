@@ -1,13 +1,30 @@
 package info.bpace.redditreader;
 
 import info.bpace.redditreader.api.Listings;
+import info.bpace.redditreader.api.Subreddits;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -100,6 +117,14 @@ public class SubredditListFragment extends ListFragment {
 	    layout = android.R.layout.simple_list_item_activated_1;
 	    text = android.R.id.text1;
 	    aa = new ArrayAdapter<MenuItem>(a, layout, text, categories);
+	    
+	    ConnectivityManager connMgr = 
+	    		(ConnectivityManager) a.getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+	    if(networkInfo != null && networkInfo.isConnected()) {
+	    	Log.d(DEBUG_TAG, "Retrieving popular reddits...");
+	    	new SubredditTask().execute(Subreddits.popular());
+	    }
 
 	    setListAdapter(aa);
 	}
@@ -176,5 +201,74 @@ public class SubredditListFragment extends ListFragment {
 		}
 
 		mActivatedPosition = position;
+	}
+	
+	public class SubredditTask extends AsyncTask<String, String, String> {
+
+		@Override
+		protected String doInBackground(String... urls) {
+			// TODO Auto-generated method stub
+			try {
+				return downloadUrl(urls[0]);
+			} catch (IOException e) {
+				return "Unable to retrieve web page. URL may be invalid.";
+			}
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			try {
+				JSONObject jobject = new JSONObject(result);
+				JSONArray jposts = jobject.getJSONObject("data").getJSONArray("children");
+			
+				Log.d(DEBUG_TAG, result);
+				for(int i = 0; i < jposts.length(); i++) {
+					String category = jposts.getJSONObject(i).getJSONObject("data").getString("display_name");
+//					Log.d(DEBUG_TAG, jposts.getJSONObject(i).getJSONObject("data").getString("display_name"));
+					MenuItem newCategory = new MenuItem(Subreddits.subreddit(category), category);
+					aa.add(newCategory);
+				}
+				
+			} catch (JSONException e) {
+				Log.e(DEBUG_TAG, "Error, exception occured: " + e);
+			}
+		}
+
+		private String downloadUrl(Object newUrl) throws IOException {
+			InputStream is = null;
+			int len = 500000;
+
+			try {
+				URL url = new URL((String) newUrl);
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setReadTimeout(10000);
+				conn.setConnectTimeout(15000);
+				conn.setRequestMethod("GET");
+				conn.setDoInput(true);
+
+				conn.connect();
+				//int response = conn.getResponseCode();
+				is = conn.getInputStream();
+
+				String contentAsString = readIt(is, len);
+				return contentAsString;
+
+			} finally {
+				if (is != null) {
+					is.close();
+				}
+			}
+		}
+
+		private String readIt(InputStream stream, int len)
+				throws IOException, UnsupportedEncodingException {
+
+			Reader reader = null;
+			reader = new InputStreamReader(stream, "UTF-8");
+			char[] buffer = new char[len];
+			reader.read(buffer);
+
+			return new String(buffer);
+		}
 	}
 }
