@@ -33,7 +33,7 @@ import android.widget.ListView;
  * A list fragment representing a list of Subreddits. This fragment also
  * supports tablet devices by allowing list items to be given an 'activated'
  * state upon selection. This helps indicate which item is currently being
- * viewed in a {@link SubredditDetailFragment}.
+ * viewed in a {@link PostListFragment}.
  * <p>
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
@@ -112,7 +112,6 @@ public class SubredditListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// TODO: Fire off an AsyncTask here to grab popular subreddits and append them to the ListView
 	    a = getActivity();
 	    layout = android.R.layout.simple_list_item_activated_1;
 	    text = android.R.id.text1;

@@ -33,6 +33,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SubredditListActivity" />
         </activity>
+        <activity
+            android:name="info.bpace.redditreader.PostListActivity"
+            android:label="@string/title_post_list"
+            android:parentActivityName=".SubredditListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SubredditListActivity" />
+        </activity>
     </application>
 
 </manifest>

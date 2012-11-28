@@ -31,7 +31,7 @@ import android.widget.ListView;
  * either contained in a {@link SubredditListActivity} in two-pane mode (on
  * tablets) or a {@link SubredditDetailActivity} on handsets.
  */
-public class SubredditDetailFragment extends ListFragment {
+public class PostListFragment extends ListFragment {
 	/**
 	 * The fragment argument representing the item ID that this fragment
 	 * represents.
@@ -43,6 +43,7 @@ public class SubredditDetailFragment extends ListFragment {
 	private Activity a = null;
 	private int text = 0;
 	private int layout = 0;
+	private String stringUrl;
 	
 	private ThingCallbacks mCallbacks = sDummyCallbacks;
 	
@@ -55,7 +56,7 @@ public class SubredditDetailFragment extends ListFragment {
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
 	 */
-	public SubredditDetailFragment() {
+	public PostListFragment() {
 	}
 	
 	public interface Callbacks {
@@ -75,10 +76,13 @@ public class SubredditDetailFragment extends ListFragment {
 	    objects = new ArrayList<String>();
 	    aa = new ArrayAdapter<String>(a, layout, text, objects);
 	    
-	    String stringUrl;
-	    if(getArguments().containsKey(ARG_ITEM_ID)) {
+	    Bundle extras = getArguments();
+	    if(extras != null) {
+	    	Log.d("TEST", "Extras!");
+	    	Log.d("TEST", "My extra is: " + extras.getString(ARG_ITEM_ID));
 	    	stringUrl = getArguments().getString(ARG_ITEM_ID);
 	    } else {
+	    	Log.d("TEST", "No extras :(");
 	    	stringUrl = "http://www.reddit.com/hot";
 	    }
 	    
@@ -120,7 +124,7 @@ public class SubredditDetailFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.readURI(objects.get(position), ThingCallbacks.Type.LINK);
+		mCallbacks.readURI(stringUrl, ThingCallbacks.Type.LINK);
 	}
 
 	public class FrontpageTask extends AsyncTask<String, String, String> {

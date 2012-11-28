@@ -3,6 +3,7 @@
 
     <string name="app_name">Reddit Reader</string>
     <string name="title_subreddit_detail">Subreddit Detail</string>
+    <string name="title_post_list">Post List</string>
     <string name="refresh">Refresh</string>
 
 </resources>

@@ -13,7 +13,7 @@ import android.view.MenuItem;
  * {@link SubredditListActivity}.
  * <p>
  * This activity is mostly just a 'shell' activity containing nothing more than
- * a {@link SubredditDetailFragment}.
+ * a {@link PostListFragment}.
  */
 public class SubredditDetailActivity extends FragmentActivity {
 
@@ -39,10 +39,10 @@ public class SubredditDetailActivity extends FragmentActivity {
 			// using a fragment transaction.
 			Bundle arguments = new Bundle();
 			arguments.putString(
-					SubredditDetailFragment.ARG_ITEM_ID,
+					PostListFragment.ARG_ITEM_ID,
 					getIntent().getStringExtra(
-							SubredditDetailFragment.ARG_ITEM_ID));
-			SubredditDetailFragment fragment = new SubredditDetailFragment();
+							PostListFragment.ARG_ITEM_ID));
+			PostListFragment fragment = new PostListFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.subreddit_detail_container, fragment).commit();
