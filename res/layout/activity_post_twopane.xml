@@ -15,7 +15,7 @@
         android:name="info.bpace.redditreader.PostListFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1.50"
+        android:layout_weight="2"
         tools:layout="@android:layout/list_content" />
 
     <FrameLayout
