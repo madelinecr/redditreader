@@ -22,5 +22,9 @@ public class PostListActivity extends FragmentActivity
 	public void readURI(String id, Type type) {
 		// TODO Auto-generated method stub
 		
+		PostFragment fragment = new PostFragment();
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.post_detail_container, fragment)
+				.commit();
 	}
 }
