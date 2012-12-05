@@ -1,6 +1,6 @@
 package info.bpace.redditreader;
 
-import info.bpace.redditreader.api.Listings;
+import info.bpace.redditreader.api.Reddit;
 import info.bpace.redditreader.api.Subreddits;
 
 import java.io.IOException;
@@ -63,9 +63,9 @@ public class SubredditListFragment extends ListFragment {
 	}
 	
 	static {
-		categories.add(new MenuItem(Listings.hotPosts(), "Front Page"));
-		categories.add(new MenuItem(Listings.newPosts(), "New"));
-		categories.add(new MenuItem(Listings.topPosts(), "Top"));
+		//categories.add(new MenuItem(Listings.hotPosts(), "Front Page"));
+		//categories.add(new MenuItem(Listings.newPosts(), "New"));
+		//categories.add(new MenuItem(Listings.topPosts(), "Top"));
 	}
 
 	/**
