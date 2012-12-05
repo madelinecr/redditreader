@@ -4,9 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-import android.view.MenuItem;
-
 public class Reddit {
 
 	public static final String baseUrl = "http://www.reddit.com/";

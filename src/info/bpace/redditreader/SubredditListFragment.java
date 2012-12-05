@@ -2,21 +2,9 @@ package info.bpace.redditreader;
 
 import info.bpace.redditreader.api.Reddit;
 import info.bpace.redditreader.api.Subreddit;
-import info.bpace.redditreader.api.Subreddits;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
