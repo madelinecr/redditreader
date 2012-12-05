@@ -5,5 +5,5 @@ public interface ThingCallbacks {
 		COMMENT, ACCOUNT, LINK, MESSAGE, SUBREDDIT
 	}
 	
-	public void readURI(String id, Type type);
+	public void readThing(String id, Type type);
 }

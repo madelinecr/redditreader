@@ -66,14 +66,14 @@ public class SubredditListActivity extends FragmentActivity implements
 	 * that the item with the given ID was selected.
 	 */
 	@Override
-	public void readURI(String id, ThingCallbacks.Type type) {
+	public void readThing(String fullname, ThingCallbacks.Type type) {
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by
 			// adding or replacing the detail fragment using a
 			// fragment transaction.
 			if(type == ThingCallbacks.Type.SUBREDDIT) { 
 				Bundle arguments = new Bundle();
-				arguments.putString(PostListFragment.ARG_ITEM_ID, id);
+				arguments.putString(PostListFragment.ARG_ITEM_ID, fullname);
 				PostListFragment fragment = new PostListFragment();
 				fragment.setArguments(arguments);
 				getSupportFragmentManager().beginTransaction()
@@ -81,7 +81,7 @@ public class SubredditListActivity extends FragmentActivity implements
 						.commit();
 			} else if(type == ThingCallbacks.Type.LINK) {
 				Intent postIntent = new Intent(this, PostListActivity.class);
-				postIntent.putExtra(PostListFragment.ARG_ITEM_ID, id);
+				postIntent.putExtra(PostListFragment.ARG_ITEM_ID, fullname);
 				startActivity(postIntent);
 				Log.d("REDDITREADER", "This is a link, intent fired.");
 			}
@@ -91,7 +91,7 @@ public class SubredditListActivity extends FragmentActivity implements
 			// for the selected item ID.
 			Intent detailIntent = new Intent(this,
 					SubredditDetailActivity.class);
-			detailIntent.putExtra(PostListFragment.ARG_ITEM_ID, id);
+			detailIntent.putExtra(PostListFragment.ARG_ITEM_ID, fullname);
 			startActivity(detailIntent);
 		}
 	}

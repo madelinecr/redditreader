@@ -19,7 +19,7 @@ public class PostListActivity extends FragmentActivity
 	}
 
 	@Override
-	public void readURI(String id, Type type) {
+	public void readThing(String id, Type type) {
 		// TODO Auto-generated method stub
 		
 		PostFragment fragment = new PostFragment();

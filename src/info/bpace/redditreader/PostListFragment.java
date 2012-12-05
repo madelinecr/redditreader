@@ -1,18 +1,10 @@
 package info.bpace.redditreader;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import info.bpace.redditreader.api.Link;
+import info.bpace.redditreader.api.Reddit;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
@@ -38,8 +30,8 @@ public class PostListFragment extends ListFragment {
 	 */
 	public static final String ARG_ITEM_ID = "item_id";
 	
-	private List<String> objects = null;
-	private ArrayAdapter<String> aa = null;
+	private List<Link> objects = new ArrayList<Link>();
+	private ArrayAdapter<Link> aa = null;
 	private Activity a = null;
 	private int text = 0;
 	private int layout = 0;
@@ -48,7 +40,7 @@ public class PostListFragment extends ListFragment {
 	private ThingCallbacks mCallbacks = sDummyCallbacks;
 	
 	private static ThingCallbacks sDummyCallbacks = new ThingCallbacks() {
-		public void readURI(String id, ThingCallbacks.Type type) {
+		public void readThing(String id, ThingCallbacks.Type type) {
 		}
 	};
 
@@ -73,8 +65,7 @@ public class PostListFragment extends ListFragment {
 		a = getActivity();
 	    layout = android.R.layout.simple_list_item_activated_1;
 	    text = android.R.id.text1;
-	    objects = new ArrayList<String>();
-	    aa = new ArrayAdapter<String>(a, layout, text, objects);
+	    aa = new ArrayAdapter<Link>(a, layout, text, objects);
 	    
 	    Bundle extras = getArguments();
 	    if(extras != null) {
@@ -92,8 +83,10 @@ public class PostListFragment extends ListFragment {
 	    		(ConnectivityManager) a.getSystemService(Context.CONNECTIVITY_SERVICE);
 	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 	    if(networkInfo != null && networkInfo.isConnected()) {
-	    	new FrontpageTask().execute(stringUrl);
+	    	new FrontpageTask().execute();
 	    }
+	    
+	    setListAdapter(aa);
 	}
 	
 	@Override
@@ -124,75 +117,22 @@ public class PostListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.readURI(stringUrl, ThingCallbacks.Type.LINK);
+		mCallbacks.readThing(stringUrl, ThingCallbacks.Type.LINK);
 	}
 
-	public class FrontpageTask extends AsyncTask<String, String, String> {
+	public class FrontpageTask extends AsyncTask<Void, String, Link[]> {
 
 		@Override
-		protected String doInBackground(String... urls) {
-			// TODO Auto-generated method stub
-			try {
-				return downloadUrl(urls[0]);
-			} catch (IOException e) {
-				return "Unable to retrieve web page. URL may be invalid.";
-			}
+		protected Link[] doInBackground(Void... arg0) {
+			return Reddit.Subreddits.subreddit(stringUrl);
 		}
 		
 		@Override
-		protected void onPostExecute(String result) {
-			try {
-				JSONObject jobject = new JSONObject(result);
-				JSONArray jposts = jobject.getJSONObject("data").getJSONArray("children");
-				
-				objects = new ArrayList<String>();
-				aa = new ArrayAdapter<String>(a, layout, text, objects);
-				setListAdapter(aa);
-				
-				for(int i = 0; i < jposts.length(); i++) {
-					aa.add(jposts.getJSONObject(i).getJSONObject("data").getString("title"));
-				}
-				
-			} catch (JSONException e) {
-				//Log.e(DEBUG_TAG, "Error, exception occured: " + e);
+		protected void onPostExecute(Link[] result) {
+			for(int i = 0; i < result.length; i++) {
+				Log.d("TEST", "Adding links..");
+				aa.add(result[i]);
 			}
-		}
-
-		private String downloadUrl(Object newUrl) throws IOException {
-			InputStream is = null;
-			int len = 40000;
-
-			try {
-				URL url = new URL((String) newUrl);
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				conn.setReadTimeout(10000);
-				conn.setConnectTimeout(15000);
-				conn.setRequestMethod("GET");
-				conn.setDoInput(true);
-
-				conn.connect();
-				//int response = conn.getResponseCode();
-				is = conn.getInputStream();
-
-				String contentAsString = readIt(is, len);
-				return contentAsString;
-
-			} finally {
-				if (is != null) {
-					is.close();
-				}
-			}
-		}
-
-		private String readIt(InputStream stream, int len)
-				throws IOException, UnsupportedEncodingException {
-
-			Reader reader = null;
-			reader = new InputStreamReader(stream, "UTF-8");
-			char[] buffer = new char[len];
-			reader.read(buffer);
-
-			return new String(buffer);
 		}
 	}
 }

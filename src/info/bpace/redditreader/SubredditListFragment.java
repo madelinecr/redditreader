@@ -77,7 +77,7 @@ public class SubredditListFragment extends ListFragment {
 	 */
 	private static ThingCallbacks sDummyCallbacks = new ThingCallbacks() {
 		@Override
-		public void readURI(String id, ThingCallbacks.Type type) {
+		public void readThing(String id, ThingCallbacks.Type type) {
 		}
 	};
 
@@ -148,7 +148,7 @@ public class SubredditListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.readURI(categories.get(position).uri, ThingCallbacks.Type.SUBREDDIT);
+		mCallbacks.readThing(categories.get(position).getDisplayName(), ThingCallbacks.Type.SUBREDDIT);
 	}
 
 	@Override
