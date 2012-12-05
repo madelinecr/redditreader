@@ -1,6 +1,7 @@
 package info.bpace.redditreader;
 
 import info.bpace.redditreader.api.Reddit;
+import info.bpace.redditreader.api.Subreddit;
 import info.bpace.redditreader.api.Subreddits;
 
 import java.io.IOException;
@@ -47,20 +48,11 @@ public class SubredditListFragment extends ListFragment {
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 	
 	private static String DEBUG_TAG = "REDDITREADER";
-	private static List<MenuItem> categories = new ArrayList<MenuItem>();
-	private ArrayAdapter<MenuItem> aa = null;
+	private static List<Subreddit> categories = new ArrayList<Subreddit>();
+	private ArrayAdapter<Subreddit> aa = null;
 	private Activity a = null;
 	private int text = 0;
 	private int layout = 0;
-	
-	private static class MenuItem {
-		public String id;
-		public String title;
-		
-		public MenuItem(String newId, String newTitle) { id = newId; title = newTitle; }
-		@Override
-		public String toString() { return title; }
-	}
 	
 	static {
 		//categories.add(new MenuItem(Listings.hotPosts(), "Front Page"));
@@ -115,14 +107,14 @@ public class SubredditListFragment extends ListFragment {
 	    a = getActivity();
 	    layout = android.R.layout.simple_list_item_activated_1;
 	    text = android.R.id.text1;
-	    aa = new ArrayAdapter<MenuItem>(a, layout, text, categories);
+	    aa = new ArrayAdapter<Subreddit>(a, layout, text, categories);
 	    
 	    ConnectivityManager connMgr = 
 	    		(ConnectivityManager) a.getSystemService(Context.CONNECTIVITY_SERVICE);
 	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 	    if(networkInfo != null && networkInfo.isConnected()) {
 	    	Log.d(DEBUG_TAG, "Retrieving popular reddits...");
-	    	new SubredditTask().execute(Subreddits.popular());
+	    	new SubredditTask().execute();
 	    }
 
 	    setListAdapter(aa);
@@ -168,7 +160,7 @@ public class SubredditListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.readURI(categories.get(position).id, ThingCallbacks.Type.SUBREDDIT);
+		mCallbacks.readURI(categories.get(position).uri, ThingCallbacks.Type.SUBREDDIT);
 	}
 
 	@Override
@@ -202,72 +194,18 @@ public class SubredditListFragment extends ListFragment {
 		mActivatedPosition = position;
 	}
 	
-	public class SubredditTask extends AsyncTask<String, String, String> {
+	public class SubredditTask extends AsyncTask<Void, String, Subreddit[]> {
 
 		@Override
-		protected String doInBackground(String... urls) {
-			// TODO Auto-generated method stub
-			try {
-				return downloadUrl(urls[0]);
-			} catch (IOException e) {
-				return "Unable to retrieve web page. URL may be invalid.";
-			}
+		protected Subreddit[] doInBackground(Void... arg0) {
+			return Reddit.Subreddits.popular();
 		}
 		
 		@Override
-		protected void onPostExecute(String result) {
-			try {
-				JSONObject jobject = new JSONObject(result);
-				JSONArray jposts = jobject.getJSONObject("data").getJSONArray("children");
-			
-				Log.d(DEBUG_TAG, result);
-				for(int i = 0; i < jposts.length(); i++) {
-					String category = jposts.getJSONObject(i).getJSONObject("data").getString("display_name");
-//					Log.d(DEBUG_TAG, jposts.getJSONObject(i).getJSONObject("data").getString("display_name"));
-					MenuItem newCategory = new MenuItem(Subreddits.subreddit(category), category);
-					aa.add(newCategory);
-				}
-				
-			} catch (JSONException e) {
-				Log.e(DEBUG_TAG, "Error, exception occured: " + e);
+		protected void onPostExecute(Subreddit[] result) {
+			for(int i = 0; i < result.length; i++) {
+				aa.add(result[i]);
 			}
-		}
-
-		private String downloadUrl(Object newUrl) throws IOException {
-			InputStream is = null;
-			int len = 500000;
-
-			try {
-				URL url = new URL((String) newUrl);
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				conn.setReadTimeout(10000);
-				conn.setConnectTimeout(15000);
-				conn.setRequestMethod("GET");
-				conn.setDoInput(true);
-
-				conn.connect();
-				//int response = conn.getResponseCode();
-				is = conn.getInputStream();
-
-				String contentAsString = readIt(is, len);
-				return contentAsString;
-
-			} finally {
-				if (is != null) {
-					is.close();
-				}
-			}
-		}
-
-		private String readIt(InputStream stream, int len)
-				throws IOException, UnsupportedEncodingException {
-
-			Reader reader = null;
-			reader = new InputStreamReader(stream, "UTF-8");
-			char[] buffer = new char[len];
-			reader.read(buffer);
-
-			return new String(buffer);
 		}
 	}
 }
