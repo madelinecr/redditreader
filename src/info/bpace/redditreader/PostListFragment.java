@@ -2,6 +2,7 @@ package info.bpace.redditreader;
 
 import info.bpace.redditreader.api.Link;
 import info.bpace.redditreader.api.Reddit;
+import info.bpace.redditreader.api.Thing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,18 +121,20 @@ public class PostListFragment extends ListFragment {
 		mCallbacks.readThing(stringUrl, ThingCallbacks.Type.LINK);
 	}
 
-	public class FrontpageTask extends AsyncTask<Void, String, Link[]> {
+	public class FrontpageTask extends AsyncTask<Void, String, Thing[]> {
 
 		@Override
-		protected Link[] doInBackground(Void... arg0) {
+		protected Thing[] doInBackground(Void... arg0) {
 			return Reddit.Subreddits.subreddit(stringUrl);
 		}
 		
 		@Override
-		protected void onPostExecute(Link[] result) {
+		protected void onPostExecute(Thing[] result) {
 			for(int i = 0; i < result.length; i++) {
 				Log.d("TEST", "Adding links..");
-				aa.add(result[i]);
+				if(result[i] instanceof Link) {
+					aa.add((Link) result[i]);
+				}
 			}
 		}
 	}

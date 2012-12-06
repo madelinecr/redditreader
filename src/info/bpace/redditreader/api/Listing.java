@@ -28,7 +28,10 @@ public class Listing {
 		Thing newThing = null;
 		try {
 			String kind = jobject.getString("kind");
-			if(kind.equals("t5")) {
+			if(kind.equals("t3")) {
+				return new Link(jobject);
+			}
+			else if(kind.equals("t5")) {
 				return new Subreddit(jobject);
 			} else {
 				newThing = new Thing(jobject);
