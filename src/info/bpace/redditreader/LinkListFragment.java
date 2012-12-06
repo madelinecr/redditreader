@@ -24,7 +24,7 @@ import android.widget.ListView;
  * either contained in a {@link SubredditListActivity} in two-pane mode (on
  * tablets) or a {@link SubredditDetailActivity} on handsets.
  */
-public class PostListFragment extends ListFragment {
+public class LinkListFragment extends ListFragment {
 	/**
 	 * The fragment argument representing the item ID that this fragment
 	 * represents.
@@ -49,7 +49,7 @@ public class PostListFragment extends ListFragment {
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
 	 */
-	public PostListFragment() {
+	public LinkListFragment() {
 	}
 	
 	public interface Callbacks {

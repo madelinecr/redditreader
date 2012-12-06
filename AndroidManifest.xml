@@ -34,7 +34,7 @@
                 android:value=".SubredditListActivity" />
         </activity>
         <activity
-            android:name="info.bpace.redditreader.PostListActivity"
+            android:name="info.bpace.redditreader.LinkListActivity"
             android:label="@string/title_post_list"
             android:parentActivityName=".SubredditListActivity" >
             <meta-data

@@ -17,7 +17,7 @@ import android.view.MenuInflater;
  * <p>
  * The activity makes heavy use of fragments. The list of items is a
  * {@link SubredditListFragment} and the item details (if present) is a
- * {@link PostListFragment}.
+ * {@link LinkListFragment}.
  * <p>
  * This activity also implements the required
  * {@link SubredditListFragment.Callbacks} interface to listen for item
@@ -73,15 +73,15 @@ public class SubredditListActivity extends FragmentActivity implements
 			// fragment transaction.
 			if(type == ThingCallbacks.Type.SUBREDDIT) { 
 				Bundle arguments = new Bundle();
-				arguments.putString(PostListFragment.ARG_ITEM_ID, fullname);
-				PostListFragment fragment = new PostListFragment();
+				arguments.putString(LinkListFragment.ARG_ITEM_ID, fullname);
+				LinkListFragment fragment = new LinkListFragment();
 				fragment.setArguments(arguments);
 				getSupportFragmentManager().beginTransaction()
 						.replace(R.id.subreddit_detail_container, fragment)
 						.commit();
 			} else if(type == ThingCallbacks.Type.LINK) {
-				Intent postIntent = new Intent(this, PostListActivity.class);
-				postIntent.putExtra(PostListFragment.ARG_ITEM_ID, fullname);
+				Intent postIntent = new Intent(this, LinkListActivity.class);
+				postIntent.putExtra(LinkListFragment.ARG_ITEM_ID, fullname);
 				startActivity(postIntent);
 				Log.d("REDDITREADER", "This is a link, intent fired.");
 			}
@@ -91,7 +91,7 @@ public class SubredditListActivity extends FragmentActivity implements
 			// for the selected item ID.
 			Intent detailIntent = new Intent(this,
 					SubredditDetailActivity.class);
-			detailIntent.putExtra(PostListFragment.ARG_ITEM_ID, fullname);
+			detailIntent.putExtra(LinkListFragment.ARG_ITEM_ID, fullname);
 			startActivity(detailIntent);
 		}
 	}
