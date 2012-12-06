@@ -1,7 +1,5 @@
 package info.bpace.redditreader.api;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
@@ -23,18 +21,6 @@ public class Reddit {
 			JSONObject response = Query.downloadUrl(baseUrl + "r/" + subreddit + ".json");
 			Listing list = new Listing(response);
 			return list.getList();
-//			Link[] links = null;
-//			try {
-//				JSONArray children = response.getJSONObject("data").getJSONArray("children");
-//				links = new Link[children.length()];
-//				for(int i = 0; i < children.length(); i++) {
-//					Link link = new Link(children.getJSONObject(i));
-//					links[i] = link;
-//				}
-//			} catch(JSONException e) {
-//				e.printStackTrace();
-//			}
-//			return links;
 		}
 	}
 }

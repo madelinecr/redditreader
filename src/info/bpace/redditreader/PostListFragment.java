@@ -78,8 +78,6 @@ public class PostListFragment extends ListFragment {
 	    	stringUrl = "http://www.reddit.com/hot";
 	    }
 	    
-	    Log.d("TEST", stringUrl);
-	    
 	    ConnectivityManager connMgr = 
 	    		(ConnectivityManager) a.getSystemService(Context.CONNECTIVITY_SERVICE);
 	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -131,7 +129,6 @@ public class PostListFragment extends ListFragment {
 		@Override
 		protected void onPostExecute(Thing[] result) {
 			for(int i = 0; i < result.length; i++) {
-				Log.d("TEST", "Adding links..");
 				if(result[i] instanceof Link) {
 					aa.add((Link) result[i]);
 				}
