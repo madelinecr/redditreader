@@ -11,26 +11,15 @@ public class Reddit {
 	public static final String baseUrl = "http://www.reddit.com/";
 
 	public static class Subreddits {
-		public static Subreddit[] popular() {
+		public static Thing[] popular() {
 			Log.d("REDDITREADER", "Returning popular subreddits...");
 			JSONObject response = Query.downloadUrl(baseUrl + "reddits/popular.json");
-			Subreddit[] subreddits = null;
-			try {
-				JSONArray children = response.getJSONObject("data").getJSONArray("children");
-				subreddits = new Subreddit[children.length()];
-				//Log.d(DEBUG_TAG, result);
-				for(int i = 0; i < children.length(); i++) {
-					Subreddit subreddit = new Subreddit(children.getJSONObject(i));
-					subreddits[i] = subreddit;
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-				//Log.e(DEBUG_TAG, "Error, exception occured: " + e);
-			}
-			return subreddits;
+			Listing list = new Listing(response);
+			return list.getList();
 		}
 		
 		public static Link[] subreddit(String subreddit) {
+			// TODO: Update to use new Listing class
 			JSONObject response = Query.downloadUrl(baseUrl + "r/" + subreddit + ".json");
 			Link[] links = null;
 			try {

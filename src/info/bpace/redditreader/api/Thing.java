@@ -10,10 +10,10 @@ public class Thing {
 	
 	public Thing(JSONObject jobject) {
 		try {
+			kind = jobject.getString("kind");
 			JSONObject jdata = jobject.getJSONObject("data");
 			id = jdata.getString("id");
 			name = jdata.getString("name");
-			kind = jdata.getString("kind");
 		} catch(JSONException e) {
 			e.printStackTrace();
 		}

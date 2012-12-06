@@ -2,6 +2,7 @@ package info.bpace.redditreader;
 
 import info.bpace.redditreader.api.Reddit;
 import info.bpace.redditreader.api.Subreddit;
+import info.bpace.redditreader.api.Thing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,18 +35,18 @@ public class SubredditListFragment extends ListFragment {
 	 * activated item position. Only used on tablets.
 	 */
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
-	
+
 	private static String DEBUG_TAG = "REDDITREADER";
 	private static List<Subreddit> categories = new ArrayList<Subreddit>();
 	private ArrayAdapter<Subreddit> aa = null;
 	private Activity a = null;
 	private int text = 0;
 	private int layout = 0;
-	
+
 	static {
-		//categories.add(new MenuItem(Listings.hotPosts(), "Front Page"));
-		//categories.add(new MenuItem(Listings.newPosts(), "New"));
-		//categories.add(new MenuItem(Listings.topPosts(), "Top"));
+		// categories.add(new MenuItem(Listings.hotPosts(), "Front Page"));
+		// categories.add(new MenuItem(Listings.newPosts(), "New"));
+		// categories.add(new MenuItem(Listings.topPosts(), "Top"));
 	}
 
 	/**
@@ -92,22 +93,22 @@ public class SubredditListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-	    a = getActivity();
-	    layout = android.R.layout.simple_list_item_activated_1;
-	    text = android.R.id.text1;
-	    aa = new ArrayAdapter<Subreddit>(a, layout, text, categories);
-	    
-	    ConnectivityManager connMgr = 
-	    		(ConnectivityManager) a.getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-	    if(networkInfo != null && networkInfo.isConnected()) {
-	    	Log.d(DEBUG_TAG, "Retrieving popular reddits...");
-	    	new SubredditTask().execute();
-	    }
+		a = getActivity();
+		layout = android.R.layout.simple_list_item_activated_1;
+		text = android.R.id.text1;
+		aa = new ArrayAdapter<Subreddit>(a, layout, text, categories);
 
-	    setListAdapter(aa);
+		ConnectivityManager connMgr = (ConnectivityManager) a
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		if (networkInfo != null && networkInfo.isConnected()) {
+			Log.d(DEBUG_TAG, "Retrieving popular reddits...");
+			new SubredditTask().execute();
+		}
+
+		setListAdapter(aa);
 	}
-	
+
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
@@ -148,7 +149,8 @@ public class SubredditListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.readThing(categories.get(position).getDisplayName(), ThingCallbacks.Type.SUBREDDIT);
+		mCallbacks.readThing(categories.get(position).getDisplayName(),
+				ThingCallbacks.Type.SUBREDDIT);
 	}
 
 	@Override
@@ -181,18 +183,20 @@ public class SubredditListFragment extends ListFragment {
 
 		mActivatedPosition = position;
 	}
-	
-	public class SubredditTask extends AsyncTask<Void, String, Subreddit[]> {
+
+	public class SubredditTask extends AsyncTask<Void, String, Thing[]> {
 
 		@Override
-		protected Subreddit[] doInBackground(Void... arg0) {
+		protected Thing[] doInBackground(Void... arg0) {
 			return Reddit.Subreddits.popular();
 		}
-		
+
 		@Override
-		protected void onPostExecute(Subreddit[] result) {
-			for(int i = 0; i < result.length; i++) {
-				aa.add(result[i]);
+		protected void onPostExecute(Thing[] result) {
+			for (int i = 0; i < result.length; i++) {
+				if(result[i] instanceof Subreddit) {
+					aa.add((Subreddit) result[i]);
+				}
 			}
 		}
 	}
