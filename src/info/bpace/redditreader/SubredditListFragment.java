@@ -53,7 +53,7 @@ public class SubredditListFragment extends ListFragment {
 	 * The fragment's current callback object, which is notified of list item
 	 * clicks.
 	 */
-	private ThingCallbacks mCallbacks = sDummyCallbacks;
+	private Callbacks mCallbacks = sDummyCallbacks;
 
 	/**
 	 * The current activated item position. Only used on tablets.
@@ -69,16 +69,16 @@ public class SubredditListFragment extends ListFragment {
 		/**
 		 * Callback for when an item has been selected.
 		 */
-		public void onItemSelected(String id);
+		public void readSubreddit(Subreddit subreddit);
 	}
 
 	/**
 	 * A dummy implementation of the {@link Callbacks} interface that does
 	 * nothing. Used only when this fragment is not attached to an activity.
 	 */
-	private static ThingCallbacks sDummyCallbacks = new ThingCallbacks() {
+	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
-		public void readThing(String id, ThingCallbacks.Type type) {
+		public void readSubreddit(Subreddit subreddit) {
 		}
 	};
 
@@ -126,12 +126,12 @@ public class SubredditListFragment extends ListFragment {
 		super.onAttach(activity);
 
 		// Activities containing this fragment must implement its callbacks.
-		if (!(activity instanceof ThingCallbacks)) {
+		if (!(activity instanceof Callbacks)) {
 			throw new IllegalStateException(
 					"Activity must implement fragment's callbacks.");
 		}
 
-		mCallbacks = (ThingCallbacks) activity;
+		mCallbacks = (Callbacks) activity;
 	}
 
 	@Override
@@ -149,8 +149,7 @@ public class SubredditListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.readThing(categories.get(position).getDisplayName(),
-				ThingCallbacks.Type.SUBREDDIT);
+		mCallbacks.readSubreddit(categories.get(position));
 	}
 
 	@Override

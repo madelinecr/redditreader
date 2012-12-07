@@ -38,10 +38,10 @@ public class LinkListFragment extends ListFragment {
 	private int layout = 0;
 	private String stringUrl;
 	
-	private ThingCallbacks mCallbacks = sDummyCallbacks;
+	private Callbacks mCallbacks = sDummyCallbacks;
 	
-	private static ThingCallbacks sDummyCallbacks = new ThingCallbacks() {
-		public void readThing(String id, ThingCallbacks.Type type) {
+	private static Callbacks sDummyCallbacks = new Callbacks() {
+		public void readLink(Link link) {
 		}
 	};
 
@@ -56,7 +56,7 @@ public class LinkListFragment extends ListFragment {
 		/**
 		 * Callback for when an item has been selected.
 		 */
-		public void onItemSelected(String id, boolean article);
+		public void readLink(Link link);
 	}
 
 	@Override
@@ -70,7 +70,6 @@ public class LinkListFragment extends ListFragment {
 	    
 	    Bundle extras = getArguments();
 	    if(extras != null) {
-	    	Log.d("TEST", "Extras!");
 	    	Log.d("TEST", "My extra is: " + extras.getString(ARG_ITEM_ID));
 	    	stringUrl = getArguments().getString(ARG_ITEM_ID);
 	    } else {
@@ -93,12 +92,12 @@ public class LinkListFragment extends ListFragment {
 		super.onAttach(activity);
 
 		// Activities containing this fragment must implement its callbacks.
-		if (!(activity instanceof ThingCallbacks)) {
+		if (!(activity instanceof Callbacks)) {
 			throw new IllegalStateException(
 					"Activity must implement fragment's callbacks.");
 		}
 
-		mCallbacks = (ThingCallbacks) activity;
+		mCallbacks = (Callbacks) activity;
 	}
 
 	@Override
@@ -116,7 +115,7 @@ public class LinkListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.readThing(stringUrl, ThingCallbacks.Type.LINK);
+		mCallbacks.readLink(objects.get(position));
 	}
 
 	public class FrontpageTask extends AsyncTask<Void, String, Thing[]> {

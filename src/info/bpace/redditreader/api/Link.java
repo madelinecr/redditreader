@@ -5,11 +5,14 @@ import org.json.JSONObject;
 
 public class Link extends Thing {
 	private String title;
+	private String subreddit;
 
 	public Link(JSONObject jobject) {
 		super(jobject);
 		try {
-			title = jobject.getJSONObject("data").getString("title");
+			JSONObject jdata = jobject.getJSONObject("data");
+			title = jdata.getString("title");
+			subreddit = jdata.getString("subreddit");
 		} catch(JSONException e) {
 			e.printStackTrace();
 		}
@@ -21,5 +24,9 @@ public class Link extends Thing {
 	
 	public String getTitle() {
 		return title;
+	}
+	
+	public String getSubreddit() {
+		return subreddit;
 	}
 }

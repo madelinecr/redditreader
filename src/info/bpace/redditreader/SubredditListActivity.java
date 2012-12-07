@@ -1,5 +1,7 @@
 package info.bpace.redditreader;
 
+import info.bpace.redditreader.api.Link;
+import info.bpace.redditreader.api.Subreddit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -24,7 +26,7 @@ import android.view.MenuInflater;
  * selections.
  */
 public class SubredditListActivity extends FragmentActivity implements
-		ThingCallbacks {
+		LinkListFragment.Callbacks, SubredditListFragment.Callbacks {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -65,7 +67,6 @@ public class SubredditListActivity extends FragmentActivity implements
 	 * Callback method from {@link SubredditListFragment.Callbacks} indicating
 	 * that the item with the given ID was selected.
 	 */
-	@Override
 	public void readThing(String fullname, ThingCallbacks.Type type) {
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by
@@ -94,5 +95,24 @@ public class SubredditListActivity extends FragmentActivity implements
 			detailIntent.putExtra(LinkListFragment.ARG_ITEM_ID, fullname);
 			startActivity(detailIntent);
 		}
+	}
+
+	@Override
+	public void readSubreddit(Subreddit subreddit) {
+		Bundle arguments = new Bundle();
+		arguments.putString(LinkListFragment.ARG_ITEM_ID, subreddit.getDisplayName());
+		LinkListFragment fragment = new LinkListFragment();
+		fragment.setArguments(arguments);
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.subreddit_detail_container, fragment)
+				.commit();
+	}
+
+	@Override
+	public void readLink(Link link) {
+		Intent postIntent = new Intent(this, LinkListActivity.class);
+		postIntent.putExtra(LinkListFragment.ARG_ITEM_ID, link.getSubreddit());
+		startActivity(postIntent);
+		Log.d("REDDITREADER", "This is a link, intent fired.");		
 	}
 }
