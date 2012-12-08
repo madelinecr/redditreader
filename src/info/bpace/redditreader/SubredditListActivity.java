@@ -34,7 +34,6 @@ public class SubredditListActivity extends FragmentActivity implements
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
 	 * device.
 	 */
-	private boolean mTwoPane;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +45,6 @@ public class SubredditListActivity extends FragmentActivity implements
 			// large-screen layouts (res/values-large and
 			// res/values-sw600dp). If this view is present, then the
 			// activity should be in two-pane mode.
-			mTwoPane = true;
 
 			// In two-pane mode, list items should be given the
 			// 'activated' state when touched.
@@ -63,40 +61,6 @@ public class SubredditListActivity extends FragmentActivity implements
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_menu, menu);
 		return true;
-	}
-
-	/**
-	 * Callback method from {@link SubredditListFragment.Callbacks} indicating
-	 * that the item with the given ID was selected.
-	 */
-	public void readThing(String fullname, ThingCallbacks.Type type) {
-		if (mTwoPane) {
-			// In two-pane mode, show the detail view in this activity by
-			// adding or replacing the detail fragment using a
-			// fragment transaction.
-			if(type == ThingCallbacks.Type.SUBREDDIT) { 
-				Bundle arguments = new Bundle();
-				arguments.putString(LinkListFragment.ARG_ITEM_ID, fullname);
-				LinkListFragment fragment = new LinkListFragment();
-				fragment.setArguments(arguments);
-				getSupportFragmentManager().beginTransaction()
-						.replace(R.id.subreddit_detail_container, fragment)
-						.commit();
-			} else if(type == ThingCallbacks.Type.LINK) {
-				Intent postIntent = new Intent(this, LinkListActivity.class);
-				postIntent.putExtra(LinkListFragment.ARG_ITEM_ID, fullname);
-				startActivity(postIntent);
-				Log.d(TAG, "This is a link, intent fired.");
-			}
-
-		} else {
-			// In single-pane mode, simply start the detail activity
-			// for the selected item ID.
-			Intent detailIntent = new Intent(this,
-					SubredditDetailActivity.class);
-			detailIntent.putExtra(LinkListFragment.ARG_ITEM_ID, fullname);
-			startActivity(detailIntent);
-		}
 	}
 
 	@Override
