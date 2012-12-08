@@ -10,13 +10,14 @@ import android.view.ViewGroup;
 public class LinkFragment extends Fragment {
 	
 	public static final String ARG_LINK_ID = "link_id";
+	private static final String TAG = "linkfragment";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Bundle extras = getArguments();
 		if(extras != null) {
-			Log.d("LINK", extras.getString(ARG_LINK_ID));
+			Log.d(TAG, extras.getString(ARG_LINK_ID));
 		}
 	}
 		

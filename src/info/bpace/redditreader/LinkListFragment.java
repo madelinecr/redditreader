@@ -31,6 +31,8 @@ public class LinkListFragment extends ListFragment {
 	 */
 	public static final String ARG_ITEM_ID = "item_id";
 	
+	private static final String TAG = "linklistfragment";
+	
 	private List<Link> objects = new ArrayList<Link>();
 	private ArrayAdapter<Link> aa = null;
 	private Activity a = null;
@@ -70,10 +72,10 @@ public class LinkListFragment extends ListFragment {
 	    
 	    Bundle extras = getArguments();
 	    if(extras != null) {
-	    	Log.d("TEST", "My extra is: " + extras.getString(ARG_ITEM_ID));
+	    	Log.d(TAG, "My extra is: " + extras.getString(ARG_ITEM_ID));
 	    	stringUrl = getArguments().getString(ARG_ITEM_ID);
 	    } else {
-	    	Log.d("TEST", "No extras :(");
+	    	Log.d(TAG, "No extras :(");
 	    	stringUrl = "http://www.reddit.com/hot";
 	    }
 	    

@@ -27,6 +27,8 @@ import android.view.MenuInflater;
  */
 public class SubredditListActivity extends FragmentActivity implements
 		LinkListFragment.Callbacks, SubredditListFragment.Callbacks {
+	
+	private static final String TAG = "subredditlistactivity";
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -84,7 +86,7 @@ public class SubredditListActivity extends FragmentActivity implements
 				Intent postIntent = new Intent(this, LinkListActivity.class);
 				postIntent.putExtra(LinkListFragment.ARG_ITEM_ID, fullname);
 				startActivity(postIntent);
-				Log.d("REDDITREADER", "This is a link, intent fired.");
+				Log.d(TAG, "This is a link, intent fired.");
 			}
 
 		} else {
@@ -113,6 +115,6 @@ public class SubredditListActivity extends FragmentActivity implements
 		Intent postIntent = new Intent(this, LinkListActivity.class);
 		postIntent.putExtra(LinkListFragment.ARG_ITEM_ID, link.getSubreddit());
 		startActivity(postIntent);
-		Log.d("REDDITREADER", "This is a link, intent fired.");		
+		Log.d(TAG, "This is a link, intent fired.");		
 	}
 }

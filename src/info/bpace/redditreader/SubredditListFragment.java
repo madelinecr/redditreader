@@ -36,7 +36,7 @@ public class SubredditListFragment extends ListFragment {
 	 */
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
-	private static String DEBUG_TAG = "REDDITREADER";
+	private static String TAG = "subredditlistfragment";
 	private static List<Subreddit> categories = new ArrayList<Subreddit>();
 	private ArrayAdapter<Subreddit> aa = null;
 	private Activity a = null;
@@ -102,7 +102,7 @@ public class SubredditListFragment extends ListFragment {
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected()) {
-			Log.d(DEBUG_TAG, "Retrieving popular reddits...");
+			Log.d(TAG, "Retrieving popular reddits...");
 			new SubredditTask().execute();
 		}
 
