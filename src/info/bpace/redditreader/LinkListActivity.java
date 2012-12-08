@@ -22,7 +22,7 @@ public class LinkListActivity extends FragmentActivity
 	@Override
 	public void readLink(Link link) {
 		Bundle arguments = new Bundle();
-		arguments.putString(LinkFragment.ARG_LINK_ID, link.getId());
+		arguments.putString(LinkFragment.ARG_LINK_ID, link.getName());
 		LinkFragment fragment = new LinkFragment();
 		fragment.setArguments(arguments);
 		getSupportFragmentManager().beginTransaction()
