@@ -23,6 +23,8 @@ public class LinkListActivity extends FragmentActivity
 	public void readLink(Link link) {
 		Bundle arguments = new Bundle();
 		arguments.putString(LinkFragment.ARG_LINK_ID, link.getName());
+		arguments.putString(LinkFragment.ARG_LINK_TITLE, link.getTitle());
+		arguments.putString(LinkFragment.ARG_LINK_SELFTEXT, link.getSelftext());
 		LinkFragment fragment = new LinkFragment();
 		fragment.setArguments(arguments);
 		getSupportFragmentManager().beginTransaction()

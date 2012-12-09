@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 public class Link extends Thing {
 	private String title;
+	private String selftext;
 	private String subreddit;
 
 	public Link(JSONObject jobject) {
@@ -12,6 +13,7 @@ public class Link extends Thing {
 		try {
 			JSONObject jdata = jobject.getJSONObject("data");
 			title = jdata.getString("title");
+			selftext = jdata.getString("selftext");
 			subreddit = jdata.getString("subreddit");
 		} catch(JSONException e) {
 			e.printStackTrace();
@@ -24,6 +26,10 @@ public class Link extends Thing {
 	
 	public String getTitle() {
 		return title;
+	}
+	
+	public String getSelftext() {
+		return selftext;
 	}
 	
 	public String getSubreddit() {
