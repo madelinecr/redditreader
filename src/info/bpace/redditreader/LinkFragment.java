@@ -1,9 +1,7 @@
 package info.bpace.redditreader;
 
-import java.net.URL;
-
+import info.bpace.redditreader.api.Imgur;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -78,19 +76,20 @@ public class LinkFragment extends Fragment {
 
 		@Override
 		protected Bitmap doInBackground(Void... arg0) {
-			Bitmap bmp = null;
-			Log.d(TAG, "Processing link " + url);
-			if (url.endsWith("jpg") || url.endsWith("png")) {
-				try {
-					Log.d(TAG, "Link determined to be an image.");
-					URL urlObject = new URL(url);
-					bmp = BitmapFactory.decodeStream(urlObject.openConnection()
-							.getInputStream());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			return bmp;
+			return Imgur.grabImage(url);
+			// Bitmap bmp = null;
+			// Log.d(TAG, "Processing link " + url);
+			// if (url.endsWith("jpg") || url.endsWith("png")) {
+			// try {
+			// Log.d(TAG, "Link determined to be an image.");
+			// URL urlObject = new URL(url);
+			// bmp = BitmapFactory.decodeStream(urlObject.openConnection()
+			// .getInputStream());
+			// } catch (Exception e) {
+			// e.printStackTrace();
+			// }
+			// }
+			// return bmp;
 		}
 
 		@Override
