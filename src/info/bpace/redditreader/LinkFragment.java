@@ -79,12 +79,16 @@ public class LinkFragment extends Fragment {
 		@Override
 		protected Bitmap doInBackground(Void... arg0) {
 			Bitmap bmp = null;
-			try {
-				URL urlObject = new URL(url);
-				bmp = BitmapFactory.decodeStream(urlObject.openConnection()
-						.getInputStream());
-			} catch (Exception e) {
-				e.printStackTrace();
+			Log.d(TAG, "Processing link " + url);
+			if (url.endsWith("jpg") || url.endsWith("png")) {
+				try {
+					Log.d(TAG, "Link determined to be an image.");
+					URL urlObject = new URL(url);
+					bmp = BitmapFactory.decodeStream(urlObject.openConnection()
+							.getInputStream());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			return bmp;
 		}
