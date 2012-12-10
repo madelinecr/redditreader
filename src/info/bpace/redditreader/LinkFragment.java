@@ -54,7 +54,6 @@ public class LinkFragment extends Fragment {
 
 		if (selftext.isEmpty()) {
 			try {
-				// TODO move this disgusting work off the sexy ui thread
 				new ImageTask().execute();
 
 			} catch (Exception e) {
@@ -65,9 +64,6 @@ public class LinkFragment extends Fragment {
 			TextView tv = new TextView(getActivity());
 			tv.setText(title);
 			frame.addView(tv);
-			// ((TextView) view.findViewById(R.id.post_title)).setText(title);
-			// ((TextView)
-			// view.findViewById(R.id.post_content)).setText(selftext);
 		}
 		return view;
 	}
@@ -77,19 +73,6 @@ public class LinkFragment extends Fragment {
 		@Override
 		protected Bitmap doInBackground(Void... arg0) {
 			return Imgur.grabImage(url);
-			// Bitmap bmp = null;
-			// Log.d(TAG, "Processing link " + url);
-			// if (url.endsWith("jpg") || url.endsWith("png")) {
-			// try {
-			// Log.d(TAG, "Link determined to be an image.");
-			// URL urlObject = new URL(url);
-			// bmp = BitmapFactory.decodeStream(urlObject.openConnection()
-			// .getInputStream());
-			// } catch (Exception e) {
-			// e.printStackTrace();
-			// }
-			// }
-			// return bmp;
 		}
 
 		@Override
