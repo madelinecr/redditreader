@@ -30,11 +30,6 @@ public class SubredditListActivity extends FragmentActivity implements
 	
 	private static final String TAG = "subredditlistactivity";
 
-	/**
-	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-	 * device.
-	 */
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
