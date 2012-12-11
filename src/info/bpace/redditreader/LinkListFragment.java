@@ -35,6 +35,7 @@ public class LinkListFragment extends ListFragment {
 	
 	private List<Link> objects = new ArrayList<Link>();
 	private ArrayAdapter<Link> aa = null;
+	private LinkAdapter la = null;
 	private Activity a = null;
 	private int text = 0;
 	private int layout = 0;
@@ -86,7 +87,7 @@ public class LinkListFragment extends ListFragment {
 	    	new FrontpageTask().execute();
 	    }
 	    
-	    setListAdapter(aa);
+	    //setListAdapter(aa);
 	}
 	
 	@Override
@@ -117,7 +118,7 @@ public class LinkListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.readLink(objects.get(position));
+		mCallbacks.readLink((Link) la.getItem(position));
 	}
 
 	public class FrontpageTask extends AsyncTask<Void, String, Thing[]> {
@@ -129,11 +130,14 @@ public class LinkListFragment extends ListFragment {
 		
 		@Override
 		protected void onPostExecute(Thing[] result) {
+			Link[] links = new Link[result.length];
 			for(int i = 0; i < result.length; i++) {
 				if(result[i] instanceof Link) {
-					aa.add((Link) result[i]);
+					links[i] = (Link) result[i];
 				}
 			}
+			la = new LinkAdapter(getActivity(), links);
+			setListAdapter(la);
 		}
 	}
 }

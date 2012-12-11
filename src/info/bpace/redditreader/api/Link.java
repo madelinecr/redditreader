@@ -7,6 +7,7 @@ public class Link extends Thing {
 	private String title;
 	private String selftext;
 	private String url;
+	private String score;
 	private String subreddit;
 
 	public Link(JSONObject jobject) {
@@ -16,6 +17,7 @@ public class Link extends Thing {
 			title = jdata.getString("title");
 			selftext = jdata.getString("selftext");
 			url = jdata.getString("url");
+			score = jdata.getString("score");
 			
 			subreddit = jdata.getString("subreddit");
 		} catch (JSONException e) {
@@ -38,6 +40,10 @@ public class Link extends Thing {
 	
 	public String getUrl() {
 		return url;
+	}
+	
+	public String getScore() {
+		return score;
 	}
 
 	public String getSubreddit() {
