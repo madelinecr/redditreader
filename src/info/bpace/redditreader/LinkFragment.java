@@ -1,6 +1,6 @@
 package info.bpace.redditreader;
 
-import info.bpace.redditreader.api.Imgur;
+import info.bpace.redditreader.api.WebUtils;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -72,7 +72,7 @@ public class LinkFragment extends Fragment {
 
 		@Override
 		protected Bitmap doInBackground(Void... arg0) {
-			return Imgur.grabImage(url);
+			return WebUtils.grabImage(url, false);
 		}
 
 		@Override

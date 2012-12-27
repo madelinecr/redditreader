@@ -8,11 +8,10 @@
 
     <ImageView
         android:id="@+id/thumbnail"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:padding="5dp"
         android:src="@android:drawable/stat_notify_chat" />
 
     <TextView

@@ -1,12 +1,16 @@
 package info.bpace.redditreader;
 
+import info.bpace.redditreader.api.WebUtils;
 import info.bpace.redditreader.api.Link;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class LinkAdapter extends BaseAdapter {
@@ -42,12 +46,14 @@ public class LinkAdapter extends BaseAdapter {
 		View vi = convertView;
 		if (convertView == null)
 			vi = inflater.inflate(R.layout.link_row, null);
-		
-		TextView title        = (TextView)vi.findViewById(R.id.title);
-		TextView subtitle 	  = (TextView)vi.findViewById(R.id.author);
-		TextView commentcount = (TextView)vi.findViewById(R.id.commentcount);
-		TextView score        = (TextView)vi.findViewById(R.id.score);
-		
+
+		TextView title = (TextView) vi.findViewById(R.id.title);
+		TextView subtitle = (TextView) vi.findViewById(R.id.author);
+		TextView commentcount = (TextView) vi.findViewById(R.id.commentcount);
+		TextView score = (TextView) vi.findViewById(R.id.score);
+
+		new ThumbTask(vi).execute(data[position].getUrl());
+
 		title.setText(data[position].getTitle());
 		subtitle.setText("by " + data[position].getAuthor());
 		commentcount.setText(data[position].getCommentCount() + " comments");
@@ -55,4 +61,25 @@ public class LinkAdapter extends BaseAdapter {
 		return vi;
 	}
 
+	private class ThumbTask extends AsyncTask<String, Void, Bitmap> {
+
+		private View view;
+
+		public ThumbTask(View vi) {
+			view = vi;
+		}
+
+		@Override
+		protected Bitmap doInBackground(String... url) {
+			return WebUtils.grabImage(url[0], true);
+		}
+
+		@Override
+		protected void onPostExecute(Bitmap bmp) {
+			ImageView iv = (ImageView) view.findViewById(R.id.thumbnail);
+			if(bmp != null) {
+				iv.setImageBitmap(bmp);
+			}
+		}
+	}
 }
