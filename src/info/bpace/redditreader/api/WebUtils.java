@@ -6,17 +6,28 @@ import java.net.URL;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
-public class Imgur {
+public class WebUtils {
 
-	public static Bitmap grabImage(String url) {
+	public static Bitmap grabImage(String url, boolean thumbnail) {
 		Bitmap bmp = null;
 		if (url.matches(".*imgur\\.com\\/.{5}")) {
-			// an image link missing its extension
+			// an imgur link missing its extension
 			bmp = download(url + ".jpg");
 		} else if (url.matches(".*imgur\\.com\\/.{5}\\.(jpg|png)")) {
-			// a nicely formatted image link
+			// a nicely formatted imgur link
 			bmp = download(url);
+		} else if (url.matches(".*(jpg|jpeg|png)")) {
+			// a normal image on the web
+			bmp = download(url);
+		}
+		if(bmp != null && thumbnail == true) {
+			int width = bmp.getWidth();
+			int height = bmp.getHeight();
+			int newWidth = 256;
+			int newHeight = (newWidth * height) / width;
+			return Bitmap.createScaledBitmap(bmp, newWidth, newHeight, false);
 		}
 		return bmp;
 	}
